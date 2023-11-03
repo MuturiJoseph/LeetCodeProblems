@@ -16,18 +16,32 @@ namespace ConsoleApp2
             //here we can use two pointers ci for count of odd numbers in current subarray and 
             //cj for the count of odd numbers upto the current position of j
             int i = 0, j = 0,n = nums.Length,ci = 0,cj = 0,prev = 0,ans = 0;
+            //for(;j < n; j++)
+            //{
+            //    if (nums[j] % 2 != 0) cj++;
+            //    if(ci <= cj - k)
+            //    {
+            //        prev = i;
+            //        while(ci <= cj - k)
+            //        {
+            //            if (nums[i++] % 2 != 0) ci++;
+            //        }
+            //    }
+            //    ans += i - prev;
+            //}
+            
+            //using 1 pointer cj
             for(;j < n; j++)
             {
-                if (nums[j] % 2 != 0) cj++;
-                if(ci <= cj - k)
+                int cn = nums[j] % 2;
+                cj += cn;
+                if (cn != 0 && cj >= k)
                 {
                     prev = i;
-                    while(ci <= cj - k)
-                    {
-                        if (nums[i++] % 2 != 0) ci++;
-                    }
+                    while (nums[i] % 2 == 0) i++;
+                    ++i;
                 }
-                ans += i - prev;
+                if (cj >= k) ans += i - prev;
             }
             return ans;
         }
