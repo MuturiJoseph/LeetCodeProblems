@@ -16,7 +16,7 @@ namespace ConsoleApp2
             //1,2,3,5,6
             int[] nums =  { 2, 2, 2, 1, 2, 2, 1, 2, 2, 2 };
             //var result = SlidingWindow.MinOperations(nums);
-            var result = SlidingWindow.NumberOfSubarray2P(nums, 2);
+            var result = SlidingWindow.CountVowelSbstrings("aeiouu");
             Console.WriteLine(result);
         }
 

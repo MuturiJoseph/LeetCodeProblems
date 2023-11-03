@@ -8,6 +8,37 @@ namespace ConsoleApp2
 {
     public static class SlidingWindow
     {
+        public static int CountVowelSbstrings(string word)
+        {
+            return AtMostCountVowels(word, 5) - AtMostCountVowels(word, 4);
+        }
+        public static int AtMostCountVowels(string s,int k)
+        {
+            int r = 0, l = 0, n = s.Length, ans = 0;
+            var dictionary = new Dictionary<char, int>();
+            for(;r < n; r++)
+            {
+                if (!IsVowel(s[r]))
+                {
+                    l++;
+                    dictionary.Clear();
+                    continue;
+                }
+                if (!dictionary.ContainsKey(s[r])) dictionary.Add(s[r],0);
+                dictionary[s[r]]++;
+                while(dictionary.Count > k)
+                {
+                    if (--dictionary[s[l]] == 0) dictionary.Remove(s[l]);
+                    l++;
+                }
+                ans += r - l + 1;
+            }
+            return ans;
+        }
+        private static bool IsVowel(char c)
+        {
+            return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+        }
         public static int NumberOfSubarray2P(int[] nums,int k)
         {
             //2,2,2,2,1,2,2,1,2,2,2  k=2 output = 16  //1,1,2,1,1 k = 3,output 2
