@@ -11,15 +11,13 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            //1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0
-            //0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1
-            //1,2,3,5,6
-            int[] nums =  { 2, 2, 2, 1, 2, 2, 1, 2, 2, 2 };
+            //420325
+            // 0,1,0,2,1,0,1,3,2,1,2,1
+            int[] nums =  { 4,2,0,3,2,5 };
             //var result = SlidingWindow.MinOperations(nums);
-            var result = SlidingWindow.CountVowelSbstrings("aeiouu");
+            var result = TwoPointer.Trap(nums);
+
             Console.WriteLine(result);
         }
-
-
     }
 }
