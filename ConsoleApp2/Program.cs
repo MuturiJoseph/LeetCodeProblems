@@ -13,9 +13,9 @@ namespace ConsoleApp2
         {
             //420325
             // 0,1,0,2,1,0,1,3,2,1,2,1
-            int[] nums =  { 4,2,0,3,2,5 };
+            int[] nums =  { 1, 1 };
             //var result = SlidingWindow.MinOperations(nums);
-            var result = TwoPointer.Trap(nums);
+            var result = TwoPointer.MaxArea(nums);
 
             Console.WriteLine(result);
         }

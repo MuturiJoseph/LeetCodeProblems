@@ -8,6 +8,19 @@ namespace ConsoleApp2
 {
     public static class TwoPointer
     {
+        //11
+        public static int MaxArea(int[] height)
+        {
+            int left = 0, right = height.Length - 1,MaxWater = 0;
+            while(left < right)
+            {
+                int min = Math.Min(height[left],height[right]);
+                MaxWater = Math.Max(MaxWater, min * (right - left));
+                if (height[left] < height[right]) left++;
+                else right--;
+            }
+            return MaxWater;
+        }
         //42
         public static int Trap(int[] height)
         {
