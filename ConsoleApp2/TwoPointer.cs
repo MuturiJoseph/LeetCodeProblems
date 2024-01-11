@@ -2,12 +2,519 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ConsoleApp2
 {
+    public class Node
+    {
+        public Node (Node next = null,int val=0)
+        {
+            this.next = next;
+            this.val = val;
+        }
+        public Node next;
+        public int val;
+        //141 linkedlist cycle
+        public bool HasCycle(Node head)
+        {
+            Node tortoise = head;
+            Node hare = head;
+            while (hare != null && hare.next != null)
+            {
+                hare = hare.next.next;
+                tortoise = tortoise.next;
+
+                if (hare == tortoise) return true;
+            }
+            return false;
+        }
+        //142 linkedlist cycle ii
+        public Node HasCycleII(Node head)
+        {
+            Node tortoise = head;
+            Node hare = head;
+            while (hare != null && hare.next != null)
+            {
+                hare = hare.next.next;
+                tortoise = tortoise.next;
+
+                if (hare == tortoise) break;
+            }
+            if (hare == null && hare.next == null) return null;
+            while (tortoise != head)
+            {
+                tortoise = tortoise.next;
+                head = head.next;
+            }
+            return tortoise;
+        }
+        //61 rotate list
+        public Node RotateList(Node head,int k)
+        {
+            if(head == null) return null;
+            int len = 1;
+            Node tail = head;
+            while(tail.next != null)
+            {
+                tail = tail.next;
+                len++;
+            }
+            k %= len;
+            Node curr = head;
+            int i = 0;
+            while(i < k)
+            {
+                curr = curr.next;
+                i++;
+            }
+            Node dummy = curr.next;
+            curr.next = null;
+            tail.next = head;
+
+            return dummy;
+        }
+        //143 Reorder list
+        //1 2 4 7 5 9 6 input
+        //1 6 2 9 4 5 7 answer   2 lists are joined 1 2 4 7 and (5 9 6) <--- reverse this --> 6 9 5
+        public void ReOrderList(Node head)
+        {
+            Node slow = head;
+            Node fast = head;
+            //find the mid point of the list
+            while(fast != null && fast.next.next != null)
+            {
+                slow = slow.next;
+                fast = fast.next.next;
+            }
+            //Reverse the right end of mid
+            Node prev = null, curr = slow.next;
+            while(curr != null)
+            {
+                Node nxt = curr.next;
+                curr.next = prev;
+                prev = curr;
+                curr = nxt;
+            }
+            slow.next = null;
+
+            //Join the two Lists
+            Node head1 = head, head2 = prev;
+            while(head1 != null)
+            {
+                Node temp = head1.next;
+                head1.next = head2;
+                head1 = head2;
+                head2 = temp;
+            }
+        }
+    }
     public static class TwoPointer
     {
+        //845
+        public static int LongestMountain(int[] arr)
+        {
+        }
+        //443
+        public static int Compress(char[] chars)
+        {
+            int n = chars.Length, left = 0, right = 0, ans = 0, index = 0;
+            if (n == 1) return 1;
+            while (right < n)
+            {
+                while (right < n - 1 && chars[right] == chars[right + 1]) right++;
+                int diff = right - left + 1;
+                if (diff == 1)
+                {
+                    ans += 1;
+                    chars[index] = chars[left];
+                    index++;
+                }
+                else
+                {
+                    chars[index++] = chars[left];
+                    string diffString = diff.ToString();
+                    for (int i = 0; i < diffString.Length; i++)
+                    {
+                        chars[index++] = (char)diffString[i];
+                    }
+                    ans += diffString.Length + 1;
+                }
+                right++;
+                left = right;
+            }
+            return ans;
+        }
+        public static int FindPairs(int[] nums,int k)
+        {
+            int n = nums.Length,r = 1,l = 0,cnt = 0;
+            Array.Sort(nums);
+            while(r < n)
+            {
+                while (nums[r] - nums[l] > k) l++;
+                if (nums[r] - nums[l] == k && l != r)
+                {
+                    while (l+1 < n && nums[l] == nums[l + 1]) l++;
+                    while (r + 1 < n && nums[r] == nums[r + 1]) r++;
+                    cnt += 1;
+                }
+                r++;
+            }
+            return cnt;
+        }
+        //696
+        public static int CountBinarySubstrings(string s)
+        {
+            int n = s.Length;
+            if (n == 1) return 0;
+            int left = 0, right = 0,cnt = 0,count1 = 0,count2 = 0;
+            while(right < n-1)
+            {
+                count1++;
+                while (left+1 < n && s[left] == s[left + 1])
+                {
+                    count1++; 
+                    left++;
+                }
+                right = left + 1;
+                while ( right + 1 < n && s[right] == s[right + 1])
+                {
+                    count2++; 
+                    right++;
+                }
+                if(right < n) count2++;
+                cnt += Math.Min(count1,count2);
+
+                count1 = 0; count2 = 0;
+                left++;
+            }
+            return cnt;
+        }
+        //719 Find k-th smallest pair distance
+        //public static int smallestDistancePair(int[] nums int k)
+        //{
+
+        //}
+        //1750
+        public static int MinimumLength(string s)
+        {
+            int left = 0, right = s.Length - 1;
+            while(left < right && s[left] == s[right])
+            {
+                while (left < right && s[left] == s[left + 1]) left++;
+                left++;
+                while (left < right && s[right] == s[right - 1]) right--;
+                right--;
+            }
+            return left > right ? 0 : right - left + 1;
+        }
+        //942 DI String Match
+        public static int[] DiStringMatch(string s)
+        {
+            int n = s.Length,left = 0,right = n;
+            int[] result = new int[n+1];
+            for(int i=0;i < n;i++)
+            {
+                //if (s[i] == 'I')
+                //{
+                //    if(i < 1) result[i] = i;
+                //    result[i + 1] = i + 1;
+                //}
+                //else
+                //{
+                //    int toSwap = result[i];
+                //    result[i] = i + 1;
+                //    result[i + 1] = toSwap;
+                //}
+                if (s[i] == 'I') result[i] = left++;
+                else result[i] = right--;
+            }
+            result[n] = left;
+            return result;
+        }
+        //948 Bag of Tokens
+        public static int BagOfTokensScore(int[] tokens,int power)
+        {
+            int score = 0,left = 0,right = tokens.Length-1;
+            while (left <= right)
+            {
+                if (power <= tokens[left] && score > 0 && left < right)
+                {
+                    power += tokens[right];
+                    right--;
+                    score--;
+                }
+                if (tokens[left] <= power)
+                {
+                    power -= tokens[left];
+                    score++;
+                    //left++;
+                };
+                left++;
+            }
+            return score;
+        }
+        //541 Reverse String II
+        public static string ReverseStr(string s,int k)
+        {
+            char[] chars = s.ToCharArray();
+            int left = 0,n = s.Length,right = n - 1;
+            if(right < k)
+            {
+                while(left < right)
+                {
+                    Swap(chars, left, right);
+                    left++;
+                    right--;
+                }
+            }
+            else
+            {
+                left = k * 2;
+                right = 1;
+                while(right < n)
+                {
+                    Swap(chars, right - 1, right);
+                    right += left;
+                }
+            }
+            return new string(chars);
+        }
+        //27
+        public static int RemoveElement(int[] nums,int val)
+        {
+            int index = 0;
+            if (val > 50) return nums.Length;
+            for(int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i] != val) nums[index++] = nums[i];
+            }
+            return index;
+        }
+        //917
+        public static string ReverseOnlyLetters(string s)
+        {
+            char[] chars = s.ToLower().ToCharArray();
+            char[] result = s.ToCharArray();
+            int right = chars.Length - 1,left = 0;
+            while (left < right)
+            {
+                int lside = chars[left] - 'a';
+                int rside = chars[right] - 'a';
+                if (lside < 0 || lside > 25) left++;
+                if (rside < 0 || rside > 25) right--;
+                if((lside >= 0 && lside <= 25)&& (rside >= 0 && rside <= 25))
+                {
+                    Swap(result,left, right);
+                    left++;
+                    right--;
+                }
+            }
+            return new string(result);
+        }
+        //680
+        public static bool ValidPalindrome(string s)
+        {
+            int left = 0,right = s.Length-1,count = 0;
+            while(left < right)
+            {
+                if (s[left] != s[right])
+                {
+                    if (s[left + 1] == s[right])
+                    {
+                        left++;
+                        count++;
+                    }
+                    else
+                    {
+                        right--;
+                        count++;
+                    }
+                }
+                else
+                {
+                    left++;
+                    right--;
+                }
+                if (count > 1) return false;
+            }
+            return true;
+        }
+        //345
+        public static string ReverseVowels(string s)
+        {
+            s.ToCharArray();
+            char[] arr = s.ToLower().ToCharArray();
+            HashSet<char> chars = new HashSet<char> { 'a', 'e', 'i', 'o', 'u' };
+            int left = 0, right = arr.Length - 1;
+            while(left < right)
+            {
+                while (left < right && !chars.Contains(arr[left])) left++;
+                while (left < right && !chars.Contains(arr[right])) right--;
+                Swap(arr, left, right);
+                left++;
+                right--;
+            }
+            return new String(arr);
+        }
+        //344
+        public static char[] ReverseString(char[] s)
+        {
+            int left = 0;
+            int right = s.Length - 1;
+            while(left < right)
+            {
+                Swap(s, left, right);
+                left++;
+                right--;
+            }
+            return s;
+        }
+        //private static void Swap(char[] arr, int left, int right)
+        //{
+        //    char temp = arr[left];
+        //    arr[left] = arr[right];
+        //    arr[right] = temp;
+        //}
+        //125
+        public static bool IsPalindrome(string s)
+        {
+            string palindrome = Regex.Replace(s, @"[^a-zA-Z0-9]", "").ToLower();
+            int len = palindrome.Length/2,left = 0;
+            if(palindrome.Length % 2 == 0) left = len - 1;
+            else
+            {
+                left = len - 1;
+                len = len + 1;
+            }
+            while(left >= 0)
+            {
+                if (palindrome[left] != palindrome[len]) return false;
+                left--;
+                len++;
+            }
+            return true;
+        }
+        //1850
+        public static int GetMinSwap(string num,int k)
+        {
+            int[] permutation = num.Select(c => int.Parse(c.ToString())).ToArray();
+            var result = num.Select(c => int.Parse(c.ToString())).ToArray();
+            for(int i = 0;i < k; i++)
+            {
+                NextPermutation(permutation);
+            }
+           
+ 
+            return CountSwap(result,permutation,result.Length);
+        }
+        private static int CountSwap(int[] current, int[] terget,int size)
+        {
+            int i = 0,j = 0,count = 0;
+            while(i < size)
+            {
+                j = i;
+                while (current[j] != terget[i]) j++;
+                while(i < j)
+                {
+                    Swap(current, j, j - 1);
+                    count++;
+                    j--;
+                }
+                i++;
+            }
+            return count;
+        }
+        private static void NextPermutation(int[] permutation)
+        {
+            int[] res = permutation;
+            int n = permutation.Length;
+            int right = n - 2;
+            while (right>=0 && permutation[right] >= permutation[right+1]) right--;
+            if(right < 0) return;
+            int index = right;
+            right = n - 1;
+            while (right >= 0 && permutation[index] >= permutation[right]) right--;
+            Swap(permutation, index,right);
+            Reverse(permutation, index+1,n-1);
+        }
+        private static void Swap(int[]nums,int index1,int index2)
+        {
+            int temp = nums[index1];
+            nums[index1] = nums[index2];
+            nums[index2] = temp;
+        }
+        private static void Reverse(int[] nums,int left,int right)
+        {
+            while(left < right)
+            {
+                Swap(nums,left,right);
+                left++;
+                right--;
+            }
+        }
+        //556
+        public static int NextGreaterElement(int n)
+        {
+            //working array
+            var array = n.ToString().ToCharArray();
+
+            int len = array.Length;
+            int right = len - 2;
+            while (right >= 0 && array[right] >= array[right+1]) right--;
+            if (right == -1) return -1;
+            int index = right;
+            right = len - 1;
+            while(right > index && array[index] >= array[right]) right--;
+            Swap(array, index, right);
+            
+            Reverse(array, index+1, len-1);
+            int result = 0, pow = 1;
+            right = len - 1;    
+            for(;right >= 0;right--)
+            {
+                result += (array[right] - '0') * pow;
+                pow *= 10;
+            }
+
+            return result > int.MaxValue ? -1 : result;
+        }
+        //31
+        //public static int[] NextPermutation(int[] nums)
+        //{
+        //    //1342 ----1432 --- 1423
+        //    int n = nums.Length;
+        //    if (n == 1) return nums;
+        //    int right = n - 2;
+        //    while(right >= 0 && nums[right] >= nums[right+1]) right--;
+        //    if(right == -1)
+        //    {
+        //        Array.Reverse(nums);
+        //        return nums;
+        //    }
+        //    int index = right;
+        //    right = n - 1;
+        //    while (right >= 0 && nums[index] >= nums[right]) right--;
+        //    Swap(nums, index,right);
+        //    Array.Reverse(nums,index+1,n-1-index);
+        //    return nums;
+        //}
+        private static void Reverse(char[] array, int index1, int index2)
+        {
+            while (index1 < index2)
+            {
+                Swap(array, index1, index2);
+                index1++;
+                index2--;
+            }
+        }
+        private static void Swap(char[] nums,int left,int right)
+        {
+            char temp = nums[left];
+            nums[left] = nums[right];
+            nums[right] = temp;
+        }
         //11
         public static int MaxArea(int[] height)
         {

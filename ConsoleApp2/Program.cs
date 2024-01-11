@@ -13,11 +13,15 @@ namespace ConsoleApp2
         {
             //420325
             // 0,1,0,2,1,0,1,3,2,1,2,1
-            int[] nums =  { 1, 1 };
+            //1,2,1,1,1
+            int[] nums =  {6,7,8,4,5,4,6,7,10,9,8,7};
             //var result = SlidingWindow.MinOperations(nums);
-            var result = TwoPointer.MaxArea(nums);
+            var result = TwoPointer.LongestMountain(nums);
+
 
             Console.WriteLine(result);
+            //foreach(var i in result) Console.Write(i);
+            Console.WriteLine();
         }
     }
 }
