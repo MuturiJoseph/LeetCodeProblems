@@ -7,20 +7,23 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp2
 {
+        public class ListNode
+        {
+            public ListNode next;
+            public int val;
+            public ListNode(int val = 0,ListNode next = null)
+            {
+                this.next = next;
+                this.val = val;
+            } 
+        }
     public class Node
     {
-        public Node (Node next = null,int val=0)
-        {
-            this.next = next;
-            this.val = val;
-        }
-        public Node next;
-        public int val;
         //141 linkedlist cycle
-        public bool HasCycle(Node head)
+        public bool HasCycle(ListNode head)
         {
-            Node tortoise = head;
-            Node hare = head;
+            ListNode tortoise = head;
+            ListNode hare = head;
             while (hare != null && hare.next != null)
             {
                 hare = hare.next.next;
@@ -31,10 +34,10 @@ namespace ConsoleApp2
             return false;
         }
         //142 linkedlist cycle ii
-        public Node HasCycleII(Node head)
+        public ListNode HasCycleII(ListNode head)
         {
-            Node tortoise = head;
-            Node hare = head;
+            ListNode tortoise = head;
+            ListNode hare = head;
             while (hare != null && hare.next != null)
             {
                 hare = hare.next.next;
@@ -51,25 +54,25 @@ namespace ConsoleApp2
             return tortoise;
         }
         //61 rotate list
-        public Node RotateList(Node head,int k)
+        public ListNode RotateList(ListNode head,int k)
         {
             if(head == null) return null;
             int len = 1;
-            Node tail = head;
+            ListNode tail = head;
             while(tail.next != null)
             {
                 tail = tail.next;
                 len++;
             }
             k %= len;
-            Node curr = head;
+            ListNode curr = head;
             int i = 0;
             while(i < k)
             {
                 curr = curr.next;
                 i++;
             }
-            Node dummy = curr.next;
+            ListNode dummy = curr.next;
             curr.next = null;
             tail.next = head;
 
@@ -78,10 +81,10 @@ namespace ConsoleApp2
         //143 Reorder list
         //1 2 4 7 5 9 6 input
         //1 6 2 9 4 5 7 answer   2 lists are joined 1 2 4 7 and (5 9 6) <--- reverse this --> 6 9 5
-        public void ReOrderList(Node head)
+        public void ReOrderList(ListNode head)
         {
-            Node slow = head;
-            Node fast = head;
+            ListNode slow = head;
+            ListNode fast = head;
             //find the mid point of the list
             while(fast != null && fast.next.next != null)
             {
@@ -89,10 +92,10 @@ namespace ConsoleApp2
                 fast = fast.next.next;
             }
             //Reverse the right end of mid
-            Node prev = null, curr = slow.next;
+            ListNode prev = null, curr = slow.next;
             while(curr != null)
             {
-                Node nxt = curr.next;
+                ListNode nxt = curr.next;
                 curr.next = prev;
                 prev = curr;
                 curr = nxt;
@@ -100,21 +103,127 @@ namespace ConsoleApp2
             slow.next = null;
 
             //Join the two Lists
-            Node head1 = head, head2 = prev;
+            ListNode head1 = head, head2 = prev;
             while(head1 != null)
             {
-                Node temp = head1.next;
+                ListNode temp = head1.next;
                 head1.next = head2;
                 head1 = head2;
                 head2 = temp;
             }
         }
+        public ListNode Partition(ListNode head,int x)
+        {
+            ListNode dummy = new ListNode(0);
+            ListNode dummy2 = new ListNode(0);
+            ListNode list1 = dummy;
+            ListNode list2 = dummy2;
+            while(head != null)
+            {
+                if(head.val < x)
+                {
+                    list1.next = head;
+                    list1 = head;
+                }
+                else
+                {
+                    list2.next = head;
+                    list2 = head;
+                }
+                head = head.next;
+            }
+            list1.next = dummy2.next;
+            list2.next = null;
+            return dummy.next;
+        }
     }
     public static class TwoPointer
     {
+        public static bool CanTransform(string start,string end)
+        {
+            int n  = end.Length;
+            if (start.Replace("X","") != end.Replace("X","")) return false;
+            List<int> lStart = Enumerable.Range(0,n).Where(i => start[i] == 'L').ToList();
+            List<int> lEnd = Enumerable.Range(0, n).Where(i => end[i] == 'L').ToList();
+            List<int> rStart = Enumerable.Range(0, n).Where(i => start[i] == 'R').ToList();
+            List<int> rEnd = Enumerable.Range(0, n).Where(i => end[i] == 'R').ToList();
+
+            foreach(var pair in lStart.Zip(lEnd, Tuple.Create))
+            {
+                if (pair.Item1 < pair.Item2) return false;
+            }
+            foreach(var pair in rStart.Zip(rEnd, Tuple.Create))
+            {
+                if (pair.Item1 > pair.Item2) return false;
+            }
+            return true;
+        }
+        //1023
+        public static IList<bool> CamelMatch(string[] queries,string pattern)
+        {
+            int pLength = pattern.Length;
+            IList<bool> res = new List<bool>();
+            foreach(var query in queries) res.Add(isMatch(query, pattern));
+            return res;
+        }
+        private static bool isMatch(string query,string pattern)
+        {
+            int i = 0, pLength = pattern.Length;
+            foreach (var c in query)
+            {
+                if (i < pLength && c == pattern[i]) i++;
+                else if (c < 'a') return false;
+            }
+            return i == pLength ; 
+        }
+        //1385
+        public static int FindTheDistanceValue(int[] arr1, int[] arr2,int d)
+        {
+            int arr1l = arr1.Length, arr2l = arr2.Length,ans = 0;
+            for(int i = 0;i < arr1l; i++)
+            {
+                int l = 0,r = arr2l-1;
+                bool hasBreak = false;
+                while(l < r)
+                {
+                    if (Math.Abs(arr1[i] - arr2[l]) <= d || Math.Abs(arr1[i] - arr2[r]) <= d)
+                    {
+                        hasBreak = true;
+                        break;
+                    }
+                    l++;
+                    r--;
+                }
+                if (!hasBreak)
+                {
+                    ans++;
+                    if (arr2l % 2 != 0 && Math.Abs(arr1[i] - arr2[l]) <= d) ans--;
+                }
+            }
+            return ans;
+        }
         //845
         public static int LongestMountain(int[] arr)
         {
+            int n = arr.Length, ans = 0, initial = 0, r = 0, l = 0;
+            while(l < n-2)
+            {
+                //check if value at [l == l] of [l > l+1] this is invalid
+                while (l + 1 < n && arr[l] >= arr[l + 1]) l++;
+
+                r = l+1;
+                while(r+1 < n && arr[r] < arr[r + 1])
+                {
+                    r++;
+                }
+                while (r + 1 < n && arr[r] > arr[r + 1])
+                {
+                    r++;
+                    ans = Math.Max(ans, r - l + 1);
+                }
+                l = r;
+            }
+            return ans;
         }
         //443
         public static int Compress(char[] chars)

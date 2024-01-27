@@ -11,16 +11,17 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            //420325
-            // 0,1,0,2,1,0,1,3,2,1,2,1
-            //1,2,1,1,1
-            int[] nums =  {6,7,8,4,5,4,6,7,10,9,8,7};
+            int[] arr1 =  {2,1,100,3};
+            int[] arr2 = {-5,-2,10,-3,7};
+            string[] s = new string[] { "FooBar", "FooBarTest", "FootBall","FrameBuffer","ForceFeedBack"};
             //var result = SlidingWindow.MinOperations(nums);
-            var result = TwoPointer.LongestMountain(nums);
+            var result = TwoPointer.CanTransform("LR",
+"RL");
+
 
 
             Console.WriteLine(result);
-            //foreach(var i in result) Console.Write(i);
+            //foreach(var i in result) Console.Write(i +",");
             Console.WriteLine();
         }
     }
