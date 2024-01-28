@@ -139,6 +139,56 @@ namespace ConsoleApp2
     }
     public static class TwoPointer
     {
+        public static void BottomUpMergeSort(int[] array)
+        {
+            int n = array.Length;
+            int[] tempArray = new int[n];
+
+            for (int size = 1; size < n; size *= 2)
+            {
+                for (int leftStart = 0; leftStart < n - 1; leftStart += 2 * size)
+                {
+                    int mid = Math.Min(leftStart + size - 1, n - 1); 
+                    int rightEnd = Math.Min(leftStart + 2 * size - 1, n - 1);
+
+                    Merge(array, tempArray, leftStart, mid, rightEnd);
+                }
+            }
+        }
+
+        private static void Merge(int[] array, int[] tempArray, int left, int mid, int right)
+        {
+            int i = left;
+            int j = mid + 1;
+            int k = left;
+
+            while (i <= mid && j <= right)
+            {
+                if (array[i] <= array[j])
+                {
+                    tempArray[k++] = array[i++];
+                }
+                else
+                {
+                    tempArray[k++] = array[j++];
+                }
+            }
+
+            while (i <= mid)
+            {
+                tempArray[k++] = array[i++];
+            }
+
+            while (j <= right)
+            {
+                tempArray[k++] = array[j++];
+            }
+
+            for (int index = left; index <= right; index++)
+            {
+                array[index] = tempArray[index];
+            }
+        }
         public static bool CanTransform(string start,string end)
         {
             int n  = end.Length;
