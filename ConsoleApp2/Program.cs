@@ -11,9 +11,8 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            int[] arr1 = {1,1,2};
-            int[] arr2 = { -5, -2, 10, -3, 7 };
-            var result = BackTracking.Permute(arr1);
+            int[] arr1 = { 2, 2, 2, 2, 2 };
+            var result = DynamicProgramming.FindNumberOfLIS(arr1);
 
 
 
