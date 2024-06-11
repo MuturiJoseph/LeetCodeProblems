@@ -47,5 +47,40 @@ namespace ConsoleApp2
             }
             return ans;
         }
+
+        public static int UniquePathsWithObstacles(int[][] obstacleGrid)
+        {
+            int m = obstacleGrid.Length;
+            int n = obstacleGrid[0].Length;
+            if (obstacleGrid[m - 1][n - 1] == 1) return 0;
+            int[,] result = new int[m + 1, n + 1];
+            result[m, n - 1] = 1;
+            for (int i = m - 1; i >= 0; i--)
+            {
+                for (int j = n - 1; j >= 0; j--)
+                {
+                    if (obstacleGrid[i][j] == 0)
+                    {
+                        if (result[i + 1, j] < 0 || result[i, j + 1] < 0)
+                        {
+                            result[i, j] = Math.Max(result[i + 1, j], result[i, j + 1]);
+                        }
+                        else if (result[i + 1, j] < 0 && result[i, j + 1] < 0)
+                        {
+                            result[i, j] = 0;
+                        }
+                        else
+                        {
+                            result[i, j] = result[i + 1, j] + result[i, j + 1];
+                        }
+                    }
+                    else
+                    {
+                        result[i, j] = -1;
+                    }
+                }
+            }
+            return result[0, 0];
+        }
     }
 }
