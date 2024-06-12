@@ -8,38 +8,70 @@ namespace ConsoleApp2
 {
     public static class DynamicProgramming
     {
-        public static int MctFromLeafValues(int[] arr)
+        public stat int MctFromLeafValues(int[] arr)
         {
             int n = arr.Length;
-            Pair[,] dp = new Pair[n, n];
-            Pair Dfs(int l, int r)
+            int[,] dp = new int[n, n];
+            int[,] maxLeaf = new int[n, n];
+
+            // Initialize the maxLeaf array
+            for (int i = 0; i < n; i++)
             {
-                if (dp[l, r] != null) return dp[l, r];
-
-                if (l == r)
+                maxLeaf[i, i] = arr[i];
+                for (int j = i + 1; j < n; j++)
                 {
-                    dp[l, r] = new Pair(arr[l], 0);
-                    return dp[l, r];
+                    maxLeaf[i, j] = Math.Max(maxLeaf[i, j - 1], arr[j]);
                 }
+            }
 
-                int resSum = int.MaxValue;
-                int resMax = int.MinValue;
-                for (int i = l; i < r; i++)
-                {
-                    Pair left = Dfs(l, i);
-                    Pair right = Dfs(i + 1, r);
-                    int total = left.sum + right.sum + (left.max * right.max);
-                    if (total < resSum)
+            // Fill the dp array
+            for (int l = 1; l < n; l++)
+            { // l is the length of the subarray
+                for (int i = 0; i < n - l; i++)
+                { // i is the starting index of the subarray
+                    int j = i + l; // j is the ending index of the subarray
+                    dp[i, j] = int.MaxValue;
+                    for (int k = i; k < j; k++)
                     {
-                        resSum = total;
-                        resMax = Math.Max(left.max, right.max);
+                        dp[i, j] = Math.Min(dp[i, j], dp[i, k] + dp[k + 1, j] + maxLeaf[i, k] * maxLeaf[k + 1, j]);
                     }
                 }
-                dp[l, r] = new Pair(resMax, resSum);
-                return dp[l, r];
             }
-            return Dfs(0, n - 1).sum;
+
+            return dp[0, n - 1];
         }
+        //public static int MctFromLeafValues(int[] arr)
+        //{
+        //    int n = arr.Length;
+        //    Pair[,] dp = new Pair[n, n];
+        //    Pair Dfs(int l, int r)
+        //    {
+        //        if (dp[l, r] != null) return dp[l, r];
+
+        //        if (l == r)
+        //        {
+        //            dp[l, r] = new Pair(arr[l], 0);
+        //            return dp[l, r];
+        //        }
+
+        //        int resSum = int.MaxValue;
+        //        int resMax = int.MinValue;
+        //        for (int i = l; i < r; i++)
+        //        {
+        //            Pair left = Dfs(l, i);
+        //            Pair right = Dfs(i + 1, r);
+        //            int total = left.sum + right.sum + (left.max * right.max);
+        //            if (total < resSum)
+        //            {
+        //                resSum = total;
+        //                resMax = Math.Max(left.max, right.max);
+        //            }
+        //        }
+        //        dp[l, r] = new Pair(resMax, resSum);
+        //        return dp[l, r];
+        //    }
+        //    return Dfs(0, n - 1).sum;
+        //}
         public static int FindNumberOfLIS(int[] nums)
         {
             int n = nums.Length;
