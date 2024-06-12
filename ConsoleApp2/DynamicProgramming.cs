@@ -8,6 +8,38 @@ namespace ConsoleApp2
 {
     public static class DynamicProgramming
     {
+        public static int MctFromLeafValues(int[] arr)
+        {
+            int n = arr.Length;
+            Pair[,] dp = new Pair[n, n];
+            Pair Dfs(int l, int r)
+            {
+                if (dp[l, r] != null) return dp[l, r];
+
+                if (l == r)
+                {
+                    dp[l, r] = new Pair(arr[l], 0);
+                    return dp[l, r];
+                }
+
+                int resSum = int.MaxValue;
+                int resMax = int.MinValue;
+                for (int i = l; i < r; i++)
+                {
+                    Pair left = Dfs(l, i);
+                    Pair right = Dfs(i + 1, r);
+                    int total = left.sum + right.sum + (left.max * right.max);
+                    if (total < resSum)
+                    {
+                        resSum = total;
+                        resMax = Math.Max(left.max, right.max);
+                    }
+                }
+                dp[l, r] = new Pair(resMax, resSum);
+                return dp[l, r];
+            }
+            return Dfs(0, n - 1).sum;
+        }
         public static int FindNumberOfLIS(int[] nums)
         {
             int n = nums.Length;
@@ -83,4 +115,15 @@ namespace ConsoleApp2
             return result[0, 0];
         }
     }
+    public class Pair
+    {
+        public  int max;
+        public  int sum;
+        public Pair(int max, int sum)
+        {
+            this.max = max;
+            this.sum = sum;
+        }
+    }
 }
+
