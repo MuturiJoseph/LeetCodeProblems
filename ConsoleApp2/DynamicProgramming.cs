@@ -8,7 +8,21 @@ namespace ConsoleApp2
 {
     public static class DynamicProgramming
     {
-        public stat int MctFromLeafValues(int[] arr)
+        public static int MctGreedy(int[] arr)
+        {
+            int n = arr.Length;
+            int res = 0;
+            while(n > 1)
+            {
+                int index = Array.IndexOf(arr, arr.Min());
+                int minNeig= (index > 0 && index < n - 1) ? Math.Min(arr[index + 1], arr[index - 1]) : arr[index == 0 ? index + 1 : index - 1];
+                res += minNeig * arr[index];
+                arr = arr.Take(index).Concat(arr.Skip(index+1)).ToArray();
+                n--;
+            }
+            return res;
+        }
+        public static int MctFromLeafValues(int[] arr)
         {
             int n = arr.Length;
             int[,] dp = new int[n, n];
@@ -27,7 +41,7 @@ namespace ConsoleApp2
             // Fill the dp array
             for (int l = 1; l < n; l++)
             { // l is the length of the subarray
-                for (int i = 0; i < n - l; i++)
+                for (int i = 0; i + l < n ; i++)
                 { // i is the starting index of the subarray
                     int j = i + l; // j is the ending index of the subarray
                     dp[i, j] = int.MaxValue;

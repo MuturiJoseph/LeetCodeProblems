@@ -14,13 +14,13 @@ namespace ConsoleApp2
             int m = 1;
             int n = 2;
 
-            int[] arr1 = { 6,2,4};
+            int[] arr1 = { 6, 2, 4 };
             int[][] obstacleGrid = new int[m][];
             for (int i = 0; i < m; i++)
             {
                 obstacleGrid[i] = new int[] { 0, 0 };
             }
-            var res = DynamicProgramming.MctFromLeafValues(arr1);
+            var res = DynamicProgramming.MctGreedy(arr1);
 
 
 
