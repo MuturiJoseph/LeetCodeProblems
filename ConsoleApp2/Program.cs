@@ -11,6 +11,9 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
+            int[] arr = { 5, 6, 7, 8, 8, 9, 2, 3, 5, 6, 7, 8, 9, 5, 4, 2, 12, 4, 6, 4, 2, 5, 6 };
+            int k = 3;
+
             int m = 1;
             int n = 2;
 
@@ -20,8 +23,7 @@ namespace ConsoleApp2
             {
                 obstacleGrid[i] = new int[] { 0, 0 };
             }
-            var res = DynamicProgramming.MctGreedy(arr1);
-
+            var res = DynamicProgramming.LargestRectangleArea(arr);
 
 
             Console.WriteLine(res);

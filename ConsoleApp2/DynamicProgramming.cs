@@ -8,6 +8,45 @@ namespace ConsoleApp2
 {
     public static class DynamicProgramming
     {
+        public static int LargestRectangleArea(int[] heights)
+        {
+            int n = heights.Length;
+            Stack<int> st = new Stack<int>();
+            int[] left = new int[n];
+            int[] right = new int[n];
+
+            for (int i = 0; i < n; i++)
+            {
+                while (st.Count > 0 && heights[st.Peek()] > heights[i])
+                {
+                    st.Pop();
+                }
+                left[i] = st.Count > 0 ? st.Peek() : -1;
+                st.Push(i);
+            }
+
+            st.Clear();
+
+            for (int i = n - 1; i >= 0; i--)
+            {
+                while (st.Count > 0 && heights[st.Peek()] >= heights[i])
+                {
+                    st.Pop();
+                }
+                right[i] = st.Count > 0 ? st.Peek() : n;
+                st.Push(i);
+            }
+
+            int area = 0;
+            for (int i = 0; i < n; i++)
+            {
+                int width = right[i] - left[i] - 1;
+                int currentArea = heights[i] * width;
+                area = Math.Max(area, currentArea);
+            }
+
+            return area;
+        }
         public static int MctGreedy(int[] arr)
         {
             int n = arr.Length;
