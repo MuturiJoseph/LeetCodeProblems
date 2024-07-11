@@ -8,6 +8,64 @@ namespace ConsoleApp2
 {
     public static class DynamicProgramming
     {
+        public static int RemoveBoxesRec(int[] boxes)
+        {
+            int n = boxes.Length;   
+            int[,,] dp = new int[n,n,n];
+            int def(int l,int r,int count)
+            {
+                if(l>r) return 0;
+                if (dp[l,r,count] != 0) return dp[l,r,count];
+                while(l < r && boxes[l] == boxes[l + 1])
+                {
+                    l++;
+                    count++;
+                }
+                int res = (count + 1) * (count + 1) + def(l+1,r,0);
+                for(int i = l+1; i <= r; i++)
+                {
+                    if (boxes[l] == boxes[i])
+                    {
+                        res = Math.Max(res,def(i,r,count+1) + def(l+1,i-1,0));
+                    }
+                }
+                dp[l, r, count] = res;
+                return res;
+            }
+            return def(0,n-1,0);
+        }
+        public static int RemoveBoxes(int[] boxes)
+        {
+            Array.Sort(boxes);
+            int res = 0, i = 0, n = boxes.Length;
+            for (; i < n;)
+            {
+                int count = 1;
+                while (i < n - 1 && boxes[i] == boxes[i + 1])
+                {
+                    count++;
+                    i++;
+                }
+                res += count * count;
+                i++;
+            }
+            return res;
+        }
+        public static int NumberOfUniqueBinaryTree(int n)
+        {
+            int[] dp = new int[n + 1];
+            dp[0] = 1;
+            dp[1] = 1;
+            for (int i = 2; i <= n; i++)
+            {
+                for(int j = 1;j <= i; j++)
+                {
+                    dp[i] += dp[j-1] * dp[i-j];
+                }
+            }
+
+            return dp[n];
+        }
         public static int LargestRectangleArea(int[] heights)
         {
             int n = heights.Length;
