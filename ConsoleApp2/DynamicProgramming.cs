@@ -8,6 +8,82 @@ namespace ConsoleApp2
 {
     public static class DynamicProgramming
     {
+        public static int safTest(int[] p, int[] s)
+        {
+            int n = p.Length;
+            var combined = new (int, int)[n];
+            for(int j = 0;j < n; j++)
+            {
+                combined[j] = (p[j], s[j]);
+            }
+            var sorted = combined.OrderBy(x => x.Item1).ToArray();
+
+            int i = 0;
+            for (; i < n;)
+            {
+                int j = i + 1;
+                while (sorted[i].Item1 != 0 && j < n)
+                {
+                    int diff = sorted[j].Item2 - sorted[j].Item1;
+                    if(diff >= sorted[i].Item1)
+                    {
+                        sorted[j].Item1 += sorted[i].Item1;
+                        sorted[i].Item1 = 0;
+                        i++;
+                    }
+                    else
+                    {
+                        sorted[j].Item1 += diff;
+                        sorted[i].Item1 -= diff;
+                    }
+                    j++;
+                }
+                if (j == n) break;
+            }
+            return n - i;
+        }
+        public static int GetMoneyAmount(int n)
+        {
+            int[,] dp = new int[n+1,n+1];
+            int def(int left,int right)
+            {
+                if(left>= right) return 0;
+
+                if (dp[left,right] != 0) return dp[left, right];
+
+                int count = int.MaxValue;
+                for(int i = left; i <= right; i++)
+                {
+                    count = Math.Min(count,i + Math.Max(def(left,i-1),def(i+1,right)));
+                }
+                dp[left, right] = count;
+                return count;
+            }
+
+            return def(1, n);
+        }
+        public static int GetMoneyAmountDp(int n)
+        {
+            int[,] dp = new int[n + 1, n + 1];
+            for(int i = 1; i < n; i++)
+            {
+                dp[i, i + 1] = i;
+            }
+            for(int len = 3; len <= n; len++)
+            {
+                for(int i = 1; i <= n - len + 1; i++)
+                {
+                    int count = int.MaxValue;
+                    int j = len + i - 1;
+                    for(int k = i; k <= j; k++)
+                    {
+                        count = Math.Min(count, k + Math.Max((k - 1 >= i ? dp[i, k - 1] : 0), (k + 1 <= j ? dp[k + 1, j] : 0)));
+                    }
+                    dp[i, j] = count;
+                }
+            }
+            return dp[1, n];
+        }
         public static int RemoveBoxesRec(int[] boxes)
         {
             int n = boxes.Length;   
