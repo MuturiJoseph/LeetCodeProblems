@@ -64,5 +64,51 @@ namespace ConsoleApp2
             }
             return left;
         }
+        public static int NthUglyNumber(int n, int a, int b, int c)
+        {
+            long ab = LCM(a, b);
+            long ac = LCM(a, c);
+            long bc = LCM(b, c);
+            long abc = LCM(a, bc);
+
+            bool Enough(long number)
+            {
+                long count = number / a + number / b + number / c
+                            - number / ab - number / ac - number / bc
+                            + number / abc;
+                return count >= n;
+            }
+
+            long left = 1, right = 2000000000;
+            while (left < right)
+            {
+                long mid = left + (right - left) / 2;
+                if (Enough(mid))
+                {
+                    right = mid;
+                }
+                else
+                {
+                    left = mid + 1;
+                }
+            }
+            return (int)left;
+        }
+
+        private static long LCM(long x, long y)
+        {
+            return x * y / GCD(x, y);
+        }
+
+        private static long GCD(long a, long b)
+        {
+            while (b != 0)
+            {
+                long temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
     }
 }
